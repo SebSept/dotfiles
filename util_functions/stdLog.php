@@ -2,9 +2,10 @@
 /**
  * Writes messages to stderr or stdout.
  *
- * @author Sébastien Monterisi <https://gist.github.com/SebSept/>
+ * @author Sébastien Monterisi
  * @throws FailureToWriteToFile
  */
+
 function stdErr(string $message): void
 {
     stdLog('php://stderr', $message);
@@ -19,6 +20,7 @@ function stdLog(string $stream_path, string $message): void
         throw new \FailureToWriteToFile($stream_path);
     }
 }
+
 class FailureToWriteToFile extends Exception
 {
 }

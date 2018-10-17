@@ -1,12 +1,17 @@
 #!/bin/sh
 
 # execute `php-cs-fixer fix` on each modified file (since previous commit).
+# php-cs-fixer should be installed globaly.
+#
 # - rename file pre-commit
 # - put in .git/hooks/ folder
+# - make it executable
 #
 # copied form https://github.com/PrestaShop/PrestaShop/blob/develop/.github/contrib/pre-commit
 
 PHP_BINARY=`which php`
+PHP_FIXER=`which php-cs-fixer`
+
 STAGED_FILES_CMD=`git diff --cached --name-only --diff-filter=ACMR HEAD | grep \\\\.php`
 PROJECT_PATH=$(cd "$( dirname "$0" )/../../" && pwd)
 
@@ -22,7 +27,7 @@ fi
 SFILES=${SFILES:-$STAGED_FILES_CMD}
 
 
-echo "Checking PHP Lint..."
+#echo "Checking PHP Lint..."
 for FILE in $SFILES
 do
   $PHP_BINARY -l -d display_errors=0 $PROJECT_PATH/$FILE
@@ -31,9 +36,10 @@ do
     echo "Error(s), please fix it before commit."
     exit 1
   fi
+
+  $PHP_BINARY $PHP_FIXER fix $PROJECT_PATH/$FILE
 done
 
-echo "Running PHP CS Fixer..."
-$PHP_BINARY ./vendor/bin/php-cs-fixer fix
+#echo "Running PHP CS Fixer..."
 
 exit $?
